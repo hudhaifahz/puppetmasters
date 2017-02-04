@@ -1,0 +1,7 @@
+1. figure out how to call and run external js
+2. create an interface file mimicking .htaccess so get urls can be easily translated to "server conditionals (limb/left/up/fast)"
+3. create a map file assigning "server conditionals" to output pins
+4. reformat code to handle variables from interface and map file
+5. expand code for 17+ pins, for LEDs, eg. (gpio write 9 0) if (limb/left/up/fast)
+6. apply voltage control to LEDs (for speed)
+7. switch out LEDs for motor drivers
