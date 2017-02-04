@@ -30,19 +30,23 @@ http.createServer(function(request, response) {				//starts server
 //    response.end("Hello World\n");
   }
   else if (request.method === 'GET' && request.url === '/?echo%2Fon='){
-    exec('gpio write 9 1', function(err, stdout, stderr) {
-    if (err) throw err
-    process.stdout.write(stdout)
-    process.stderr.write(stderr)
-    })
+    var on = require('./on.js');
+    on();
+//    exec('gpio write 9 1', function(err, stdout, stderr) {
+//    if (err) throw err
+//    process.stdout.write(stdout)
+//    process.stderr.write(stderr)
+//    })
     response.end("ON\n");
   }
   else if (request.method === 'GET' && request.url === '/?echo%2Foff='){
-    exec('gpio write 9 0', function(err, stdout, stderr) {
-    if (err) throw err
-    process.stdout.write(stdout)
-    process.stderr.write(stderr)
-    })
+    var off = require('./off.js');
+    off();
+//    exec('gpio write 9 0', function(err, stdout, stderr) {
+//    if (err) throw err
+//    process.stdout.write(stdout)
+//    process.stderr.write(stderr)
+//    })
     response.end("OFF\n");
   } 
   else {
