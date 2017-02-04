@@ -10,7 +10,7 @@ Node.js and dependencies come installed on Raspbian, as does wiringPi.
 sudo apt-get update
 
 2. download the file
-wget xxx
+wget https://github.com/hudhaifahz/puppetmasters/raw/master/NODE.zip
 
 3. unzip the file
 note: zip may need to be installed: sudo apt-get install zip
