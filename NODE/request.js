@@ -3,7 +3,7 @@ var exec = require('child_process').exec;				//allows terminal commands
 
 
 //pinmap
-var pinmap = { '/?echo%2Fon=': 9, '/?echo%2Foff=': 9, '/': 'gpio write 9 1' };
+var pinmap = { '/?echo%2Fon=': 9, '/?echo%2Foff=': 9, '/': [9,'gpio write 9 1'] };
 
 // for html test
 var fs = require('fs');							//allows reading of file, only for test
@@ -31,8 +31,10 @@ http.createServer(function(request, response) {				//starts server
     var i = pinmap[a];
     console.log(a);
     console.log(i);
+	console.log(i[0]);
+	console.log(i[1]);
     var ontest = require('./ontest.js');
-    ontest(i);
+    ontest(i[0]);
 //  exec( './blink' , function(err, stdout, stderr) {
 //  if (err) throw err
 //  process.stdout.write(stdout)
