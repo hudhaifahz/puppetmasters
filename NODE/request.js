@@ -1,6 +1,11 @@
 var http = require('http');						//allows server
 var exec = require('child_process').exec;				//allows terminal commands
-//for html test
+
+
+//pinmap
+var pinmap = { '/?echo%2Fon=': 9, '/?echo%2Foff=': 9, '/': 'gpio write 9 1' };
+
+// for html test
 var fs = require('fs');							//allows reading of file, only for test
 fs.readFile('./index.html', function (err, html) {
   if (err) {
@@ -21,7 +26,21 @@ http.createServer(function(request, response) {				//starts server
   response.on('error', function(err) {
     console.error(err);
   });
-  if (request.method === 'GET' && request.url === '/') {
+  if (request.method === 'GET' && request.url === '/') {    
+    var a = request.url;
+    var i = pinmap[a];
+    console.log(a);
+    console.log(i);
+    var ontest = require('./ontest.js');
+    ontest(i);
+//  exec( './blink' , function(err, stdout, stderr) {
+//  if (err) throw err
+//  process.stdout.write(stdout)
+//  process.stderr.write(stderr)
+//  });
+    response.end();
+    
+
 //    response.writeHeader(200, {"Content-Type": "text/html"});
 //    response.write(html);
 //    response.end();
@@ -30,8 +49,8 @@ http.createServer(function(request, response) {				//starts server
 //    response.end("Hello World\n");
   }
   else if (request.method === 'GET' && request.url === '/?echo%2Fon='){
-    var on = require('./on.js');
-    on();
+      var on = require('./on.js');
+      on();
 //    exec('gpio write 9 1', function(err, stdout, stderr) {
 //    if (err) throw err
 //    process.stdout.write(stdout)
@@ -40,12 +59,12 @@ http.createServer(function(request, response) {				//starts server
     response.end("ON\n");
   }
   else if (request.method === 'GET' && request.url === '/?echo%2Foff='){
-    var off = require('./off.js');
-    off();
+      var off = require('./off.js');
+      off();
 //    exec('gpio write 9 0', function(err, stdout, stderr) {
 //    if (err) throw err
-//    process.stdout.write(stdout)
-//    process.stderr.write(stderr)
+//   process.stdout.write(stdout)
+//   process.stderr.write(stderr)
 //    })
     response.end("OFF\n");
   } 
