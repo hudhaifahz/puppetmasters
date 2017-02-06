@@ -53,7 +53,7 @@ http.createServer(function(request, response) {				//starts server
 //    process.stdout.write(stdout)
 //    process.stderr.write(stderr)
 //    })
-    response.end("ON\n");
+      response.end("ON\n");
     }
     else if (request.url === '/?echo%2Foff='){
       var off = require('./off.js');
@@ -63,12 +63,25 @@ http.createServer(function(request, response) {				//starts server
 //   process.stdout.write(stdout)
 //   process.stderr.write(stderr)
 //    })
-    response.end("OFF\n");
+      response.end("OFF\n");
+    }
+    else if (request.url.startsWith("/?echo%2Fmove")){
+      // sample: '/?echo%2Fmove%2F02fastup=' <-- limb #02 move up, fast speed
+
+      // TODO: verify the url styling about limb, speed and direction information
+
+      var req = request.url;
+      var limb = parseInt(req.substring(16, 18));
+      var speed = req.substring(18, 22);
+      var direction = req.substring(22, 24);
+      var move = require('./move.js');       //TODO: finish implement of move.js
+      move(limb, speed, direction);
+      response.end("MOVED\n");
     }
     else {
-    response.statusCode = 404;
-    response.end();
-  }
+      response.statusCode = 404;
+      response.end();
+    }
 
 //    response.writeHeader(200, {"Content-Type": "text/html"});
 //    response.write(html);
