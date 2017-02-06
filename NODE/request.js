@@ -28,6 +28,33 @@ http.createServer(function(request, response) {				//starts server
   response.on('error', function(err) {
     console.error(err);
   });
+<<<<<<< HEAD
+  if (request.method === 'GET' && request.url === '/') {    
+    var a = request.url;
+    var i = pinmap[a];
+    console.log(a);
+    console.log(i);
+	console.log(i[0]);
+	console.log(i[1]);
+    var ontest = require('./ontest.js');
+    ontest(i[1]);
+//  exec( './blink' , function(err, stdout, stderr) {
+//  if (err) throw err
+//  process.stdout.write(stdout)
+//  process.stderr.write(stderr)
+//  });
+    response.end();
+    
+
+//    response.writeHeader(200, {"Content-Type": "text/html"});
+//    response.write(html);
+//    response.end();
+//    request.pipe(response);
+//    response.writeHead(200, {"Content-Type": "text/plain"});
+//    response.end("Hello World\n");
+  }
+  else if (request.method === 'GET' && request.url === '/?echo%2Fon='){
+=======
   if (request.method === 'GET') { 
     if (request.url === '/'){   
       var a = request.url;
@@ -46,6 +73,7 @@ http.createServer(function(request, response) {				//starts server
       response.end();
     }  
     else if (request.url === '/?echo%2Fon='){
+>>>>>>> origin/master
       var on = require('./on.js');
       on();
 //    exec('gpio write 9 1', function(err, stdout, stderr) {
