@@ -34,7 +34,7 @@ http.createServer(function(request, response) {				//starts server
 	console.log(i[0]);
 	console.log(i[1]);
     var ontest = require('./ontest.js');
-    ontest(i[0]);
+    ontest(i[1]);
 //  exec( './blink' , function(err, stdout, stderr) {
 //  if (err) throw err
 //  process.stdout.write(stdout)
