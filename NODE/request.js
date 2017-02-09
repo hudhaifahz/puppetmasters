@@ -61,7 +61,7 @@ http.createServer(function(request, response) {				//starts server
       //      users, plus a button to generate another code.  This non-hardcoded auth 
       //      code is good for X minutes (needs to be configurable). Guest code should 
       //      go in a file that can be checked to see if it matches and if it is still valid.
-      //Call makeGuestCode to generate a random five digit guestCode
+      //      Call makeGuestCode() to generate a random five digit guestCode.
     }
     else if (reqUrl.length == 2 && reqUrl[1] === guestCode){
       //TODO: Guest logged in page (is this needed???)
