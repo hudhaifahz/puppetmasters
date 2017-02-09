@@ -1,7 +1,5 @@
 var http = require('http');						//allows server
-var exec = require('child_process').exec;				//allows terminal commands
-
-
+var exec = require('child_process').exec;		//allows terminal commands
 //pinmap
 var pinmap = {  '/?echo%2Fon=': 9, 
                 '/?echo%2Foff=': 9, 
@@ -11,21 +9,11 @@ var pinmap = {  '/?echo%2Fon=': 9,
 // For easy remembering: "ALICE" with each letter changed to the key above(left) it on standard keyboard
 var adminCode = "QO8D3" 
 // Default guest code, can be changed by admin
-var guestCode = "00000"
+//var guestCode = require('./guestcode.js');
+var Code = 0;
 
 // for html test
 var fs = require('fs');							//allows reading of file, only for test
-
-function makeGuestCode()
-{
-    var code = "";
-    var dictionary = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    for( var i=0; i < 5; i++ )
-        code += dictionary.charAt(Math.floor(Math.random() * dictionary.length));
-    return code;
-}
-
 fs.readFile('./index.html', function (err, html) {
   if (err) {
       throw err; 
@@ -51,28 +39,40 @@ http.createServer(function(request, response) {				//starts server
   // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="arm" reqUrl[3]="right" reqUrl[4]=127
 
   var reqUrl = request.url.replace('%2F','/').split('/')
-
+  console.log(reqUrl);
+  console.log(reqUrl[0]);
+  console.log(reqUrl[1]);
+  console.log(reqUrl[1][1]);
   if (request.method === 'GET') { 
-    if (reqUrl.length == 1){   
+    if (reqUrl[1].length == 2){   
       //TODO: Default page, a form asking for the user's auth code
-    }  
+    console.log("length 0 url: " + reqUrl);
+    } 
     else if (reqUrl.length == 2 && reqUrl[1] === adminCode){
       //TODO: Admin page, user gets another auth code that can be handed out to other 
       //      users, plus a button to generate another code.  This non-hardcoded auth 
       //      code is good for X minutes (needs to be configurable). Guest code should 
       //      go in a file that can be checked to see if it matches and if it is still valid.
       //      Call makeGuestCode() to generate a random five digit guestCode.
+   
+      // Default guest code, can be changed by admin
+      var guestCode = require('./guestcode.js');
+     // console.log("Code: " + Code);
+      Code = guestCode();
+      console.log(Code);
     }
-    else if (reqUrl.length == 2 && reqUrl[1] === guestCode){
+    else if (reqUrl.length == 2 && reqUrl[1] === Code){
+      console.log("guest: " + Code);
       //TODO: Guest logged in page (is this needed???)
-    }
-    else if (reqUrl.length == 5){
+      // Don't need
+      if (reqUrl.length == 5){
       // check if the guest authentication code is correct
-      if(reqUrl[1] != guestCode){
-        response.statusCode = 401;
-        response.end();
-        break;
-      }
+        if(reqUrl[1] != Code){
+          response.statusCode = 401;
+          response.end();
+	  return;
+          //break;
+        }
       //TODO: Movement control, map body parts to pin. Add timeout.
       //      Problem: Only 17 GPIO PWM pins and output is 0-1023. How to do move up/down?
       //               Use something else instead of PWM? Do motor relays support negative input?
@@ -95,9 +95,11 @@ http.createServer(function(request, response) {				//starts server
       //    Leg Left = 37
       //    Foot Right = 38
       //    Foot Left = 40
-      var outPin = 29;  // default, least likely to cause safty problem in case of bug
+      var outPin = 1;  // default, least likely to cause safty problem in case of bug
       var speed = parseInt(reqUrl[4]);
-      breakSwitch: switch(reqUrl[2]){
+      console.log("guest: " + Code);
+      console.log("speed: " + speed); 
+   /*  breakSwitch: switch(reqUrl[2]){
         //TODO: finish inplementation for the rest of the cases
         case "arm":
             switch(reqUrl[3]){
@@ -118,12 +120,13 @@ http.createServer(function(request, response) {				//starts server
                    response.end();
 
       }
+	*/
       var move = require('./move.js'); 
       //TODO: change implemenattion of move.js      
       move(outPin, speed);
       response.end("MOVED\n");
 
-
+}
     }
 
     else {
@@ -139,4 +142,3 @@ http.createServer(function(request, response) {				//starts server
 }).listen(8080);
 
 });
-
