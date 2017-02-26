@@ -58,8 +58,8 @@ fs.readFile('./index.html', function (err, html) {
 
 http.createServer(function(request, response) {				//starts server
 //for html test
-  response.writeHeader(200, {"Content-Type": "text/html"});		
- // response.write(html);
+//  response.writeHeader(200, {"Content-Type": "text/html"});		
+  response.write(html);
   response.end();
 
   request.on('error', function(err) {
@@ -75,11 +75,18 @@ http.createServer(function(request, response) {				//starts server
   // reqUrl format: ",XYE58,arm,right,127" 
   // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
 
-  var reqUrl = request.url.replace('%2F','/').split('/')
+  var reqUrl = request.url
+  console.log(reqUrl);
+  reqUrl = reqUrl[0].replace('%2F','/').split('/')
+  console.log("reqUrl: " + reqUrl);
+  console.log("reqUrl0: " + reqUrl[0]);
+  console.log("reqUrl1: " + reqUrl[1]);
+  console.log("reqUrl11: " + reqUrl[1][1]);
   console.log(reqUrl);
   console.log(reqUrl[0]);
   console.log(reqUrl[1]);
   console.log(reqUrl[1][1]);
+
   if (request.method === 'GET') { 
     if (reqUrl[1].length == 2){   
       //TODO: Default page, a form asking for the user's auth code
