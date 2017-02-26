@@ -16,9 +16,11 @@ wget https://github.com/hudhaifahz/puppetmasters/raw/master/NODE.zip
 note: zip may need to be installed: sudo apt-get install zip
 unzip NODE
 
-4. run program
+4.  Add admin code to NODE/request.js on line 9
+
+5. run program
 get into directory: cd NODE
 node request.js
 
-5. visit your Pi localhost or home ip at port 8080
+6. visit your Pi localhost or home ip at port 8080
 eg. 127.0.0.1:8080 OR 192.168.1.73:8080

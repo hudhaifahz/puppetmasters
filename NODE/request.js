@@ -1,13 +1,12 @@
 var http = require('http');						//allows server
 var exec = require('child_process').exec;		//allows terminal commands
 //pinmap
-var pinmap = {  '/?echo%2Fon=': 9, 
-                '/?echo%2Foff=': 9, 
+var pinmap = {  '/?echo%2Fon=': 9,
+                '/?echo%2Foff=': 9,
                 '/': [9,'gpio write 9 1'] };
 
 // Admin code
-// For easy remembering: "ALICE" with each letter changed to the key above(left) it on standard keyboard
-var adminCode = "QO8D3" 
+var adminCode = ""
 // Default guest code, can be changed by admin
 //var guestCode = require('./guestcode.js');
 var Code = 0;
@@ -53,12 +52,12 @@ var motorMap = {
 var fs = require('fs');							//allows reading of file, only for test
 fs.readFile('./index.html', function (err, html) {
   if (err) {
-      throw err; 
+      throw err;
   }
 
 http.createServer(function(request, response) {				//starts server
 //for html test
-//  response.writeHeader(200, {"Content-Type": "text/html"});		
+//  response.writeHeader(200, {"Content-Type": "text/html"});
   response.write(html);
   response.end();
 
@@ -72,8 +71,11 @@ http.createServer(function(request, response) {				//starts server
   });
 
   // URL format: http://puppet/XYE58/armElbowLeft/127    127 is the speed control input value
-  // reqUrl format: ",XYE58,arm,right,127" 
+  // reqUrl format: ",XYE58,arm,right,127"
   // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
+  var token = reqUrl[1];
+  var controller = reqUrl[2];
+  var motion = reqUrl[3];
 
   var reqUrl = request.url
   console.log(reqUrl);
@@ -87,65 +89,63 @@ http.createServer(function(request, response) {				//starts server
   console.log(reqUrl[1]);
   console.log(reqUrl[1][1]);
 
-  if (request.method === 'GET') { 
-    if (reqUrl[1].length == 2){   
-      //TODO: Default page, a form asking for the user's auth code
-    console.log("length 0 url: " + reqUrl);
-    } 
-    else if (reqUrl.length == 2 && reqUrl[1] === adminCode){
-      //TODO: Admin page, user gets another auth code that can be handed out to other 
-      //      users, plus a button to generate another code.  This non-hardcoded auth 
-      //      code is good for X minutes (needs to be configurable). Guest code should 
-      //      go in a file that can be checked to see if it matches and if it is still valid.
-      //      Call makeGuestCode() to generate a random five digit guestCode.
-   
-      // Default guest code, can be changed by admin
-      var guestCode = require('./guestcode.js');
-     // console.log("Code: " + Code);
-      Code = guestCode();
-      console.log(Code);
-    }
-    //else if (reqUrl.length == 2 && reqUrl[1] === Code){
-    else if (reqUrl[1] === Code){
-      console.log("guest: " + Code);
-      //TODO: check length, if 5, it's probably an movement control command
-      if (reqUrl.length == 4){
-      // check if the guest authentication code is correct
-        if(reqUrl[1] != Code){
-          response.statusCode = 401;
-          response.end();
-	        return;
-          //break;
-        }
-        //TODO: Add timeout.
-        var controllerAddress = addressMap[reqUrl[2]];
-        var motorAddress = motorMap[reqUrl[2]];
-        var speed = parseInt(reqUrl[3]);
-        console.log("guest: " + Code);
-        console.log("controllerAddress: " + controllerAddress);
-        console.log("motorAddress: " + motorAddress);
-        console.log("speed: " + speed); 
+  // exit early if it's not a GET request,
+  // exit early if there's no access code (401 error),
+  // exit if the access code is not (valid or admin),
+  // handle the admin code (return a new code).
 
-        if(typeof controllerAddress != 'undefined' && typeof motorAddress != 'undefined'){
-          var move = require('./move.js'); 
-          move(controllerAddress, motorAddress, speed);
-          response.end("MOVED\n");
-        }
-        else{
-          response.statusCode = 404;
-          response.end();
-        }
-      }
-    }
-    else {
-      response.statusCode = 404;
-      response.end();
-    }
-  }
-  else {
+  if (request.method !== 'GET') {
     response.statusCode = 404;
     response.end();
+    return;
   }
+
+  // if token is not 5 digits
+  if (token.length !== 5) {
+    response.statusCode = 401;
+    response.end();
+    return;
+  }
+
+  // if admin code, generate a guest code and return it.
+  if (token === adminCode) {
+    var guestCode = require('./guestcode.js');
+    Code = guestCode();
+
+    // TODO: output guest code
+  }
+
+  // TODO: fetch current stored code here
+
+  if (token !== storedCode) {
+    response.statusCode = 401;
+    response.end();
+    return;
+  }
+
+  // verify controller
+  if (!(controller in addressMap) || !(controller in motorAddress)) {
+    response.statusCode = 404;
+    response.end();
+    return;
+  }
+
+  // TODO: check motion range and return error if invalid
+
+  var controllerAddress = addressMap[controller];
+  var motorAddress      = motorMap[controlelr];
+  var speed             = parseInt(motion);
+
+  //TODO: Add timeout.
+  console.log("guest: " + Code);
+  console.log("controllerAddress: " + controllerAddress);
+  console.log("motorAddress: " + motorAddress);
+  console.log("speed: " + speed);
+
+  var move = require('./move.js');
+  move(controllerAddress, motorAddress, speed);
+  response.end("MOVED\n");
+
 }).listen(8080);
 
 });
