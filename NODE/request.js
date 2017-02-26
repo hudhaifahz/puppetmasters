@@ -77,7 +77,7 @@ http.createServer(function(request, response) {				//starts server
   var controller = reqUrl[2];
   var motion     = reqUrl[3];
 
-  var reqUrl = request.url
+  var reqUrl = request.url;
   console.log(reqUrl);
   reqUrl = reqUrl[0].replace('%2F','/').split('/')
   console.log("reqUrl: " + reqUrl);
