@@ -73,9 +73,9 @@ http.createServer(function(request, response) {				//starts server
   // URL format: http://puppet/XYE58/armElbowLeft/127    127 is the speed control input value
   // reqUrl format: ",XYE58,arm,right,127"
   // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
-  var token = reqUrl[1];
+  var token      = reqUrl[1];
   var controller = reqUrl[2];
-  var motion = reqUrl[3];
+  var motion     = reqUrl[3];
 
   var reqUrl = request.url
   console.log(reqUrl);
@@ -117,6 +117,15 @@ http.createServer(function(request, response) {				//starts server
 
   // TODO: fetch current stored code here
 
+  // used to check to ensure the user has the valid token (avoid input errors)
+  // token/validate/XXXXX
+  if (token === 'token' && controller == 'validate' && motion == storedCode) {
+    response.statusCode = 200;
+    response.end();
+    return;
+  }
+
+  // ensure the token is valid
   if (token !== storedCode) {
     response.statusCode = 401;
     response.end();
