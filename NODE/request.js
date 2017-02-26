@@ -75,9 +75,9 @@ http.createServer(function(request, response) {				//starts server
   // reqUrl format: ",XYE58,arm,right,127" 
   // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
 
-  var reqUrl = request.url
+  var reqUrl = request.url;
   console.log(reqUrl);
-  reqUrl = reqUrl[0].replace('%2F','/').split('/')
+  reqUrl = reqUrl.replace('%2F','/').split('/')
   console.log("reqUrl: " + reqUrl);
   console.log("reqUrl0: " + reqUrl[0]);
   console.log("reqUrl1: " + reqUrl[1]);
@@ -109,7 +109,7 @@ http.createServer(function(request, response) {				//starts server
     else if (reqUrl[1] === Code){
       console.log("guest: " + Code);
       //TODO: check length, if 5, it's probably an movement control command
-      if (reqUrl.length == 4){
+      if (reqUrl.length == 5){
       // check if the guest authentication code is correct
         if(reqUrl[1] != Code){
           response.statusCode = 401;
