@@ -6,7 +6,7 @@ var pinmap = {  '/?echo%2Fon=': 9,
                 '/': [9,'gpio write 9 1'] };
 
 // Admin code
-var adminCode = ""
+var adminCode = "ALICE";
 // Default guest code, can be changed by admin
 //var guestCode = require('./guestcode.js');
 var Code = 0;
@@ -31,21 +31,21 @@ var addressMap = {
 };
 
 var motorMap = {
-  headTilt:         0,
-  headTurn:         1,
-  armElbowLeft:     0,
-  armHandOneLeft:   1,
-  armHandTwoLeft:   0,
-  armElbowRight:    1,
-  armHandOneRight:  0,
-  armHandTwoRight:  1,
-  backShoulderLeft: 0,
-  backShoulderRight:1,
-  back:             0,
-  legKneeLeft:      1,
-  legKneeRight:     0,
-  legHeelLeft:      1,
-  legHeelRight:     0
+  headTilt:         1,
+  headTurn:         2,
+  armElbowLeft:     1,
+  armHandOneLeft:   2,
+  armHandTwoLeft:   1,
+  armElbowRight:    2,
+  armHandOneRight:  1,
+  armHandTwoRight:  2,
+  backShoulderLeft: 1,
+  backShoulderRight:2,
+  back:             1,
+  legKneeLeft:      2,
+  legKneeRight:     1,
+  legHeelLeft:      2,
+  legHeelRight:     1,
 };
 
 // for html test
@@ -72,14 +72,17 @@ http.createServer(function(request, response) {				//starts server
 
   // URL format: http://puppet/XYE58/armElbowLeft/127    127 is the speed control input value
   // reqUrl format: ",XYE58,arm,right,127"
-  // Note: reqUrl[0]="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
+  // Note: reqUrl="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
+  var reqUrl = request.url;
+  console.log(reqUrl);
+  reqUrl = reqUrl.replace('%2F','/').split('/')
   var token      = reqUrl[1];
   var controller = reqUrl[2];
   var motion     = reqUrl[3];
 
-  var reqUrl = request.url;
-  console.log(reqUrl);
-  reqUrl = reqUrl[0].replace('%2F','/').split('/')
+//  var reqUrl = request.url;
+//  console.log(reqUrl);
+//  reqUrl = reqUrl.replace('%2F','/').split('/')
   console.log("reqUrl: " + reqUrl);
   console.log("reqUrl0: " + reqUrl[0]);
   console.log("reqUrl1: " + reqUrl[1]);
@@ -107,6 +110,7 @@ http.createServer(function(request, response) {				//starts server
     return;
   }
 
+
   // TODO: fetch current stored code here
 
   // used to check to ensure the user has the valid token (avoid input errors)
@@ -118,6 +122,7 @@ http.createServer(function(request, response) {				//starts server
     if (token === adminCode) {
       var guestCode = require('./guestcode.js');
       Code = guestCode();
+      console.log("guest: " + Code);
 
       // TODO: output guest code
 
@@ -132,14 +137,14 @@ http.createServer(function(request, response) {				//starts server
   }
 
   // ensure the token is valid
-  if (token !== storedCode) {
+  if (token !== Code /*storedCode*/) {
     response.statusCode = 401;
     response.end();
     return;
   }
 
   // verify controller
-  if (!(controller in addressMap) || !(controller in motorAddress)) {
+  if (!(controller in addressMap) || !(controller in motorMap)) {
     response.statusCode = 404;
     response.end();
     return;
@@ -148,7 +153,7 @@ http.createServer(function(request, response) {				//starts server
   // TODO: check motion range and return error if invalid
 
   var controllerAddress = addressMap[controller];
-  var motorAddress      = motorMap[controlelr];
+  var motorAddress      = motorMap[controller];
   var speed             = parseInt(motion);
 
   //TODO: Add timeout.
