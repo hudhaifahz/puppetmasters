@@ -115,7 +115,7 @@ http.createServer(function(request, response) {				//starts server
 
   // used to check to ensure the user has the valid token (avoid input errors)
   // token/validate/XXXXX
-  if (token === 'token' && controller == 'validate')
+  if (token === 'token' && controller == 'validate'){
     // in this case, token is actually stored in a different place
     token = reqUrl[3];
 
