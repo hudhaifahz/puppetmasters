@@ -93,16 +93,17 @@ http.createServer(function(request, response) {				//starts server
     token = reqUrl[3];
 
     if (token === adminCode) {
-      var guestCode = require('./guestcode.js');
-      Code = guestCode();
-      console.log("guest: " + Code);
+      var generateGuestCode = require('./guestcode.js');
+      guestCode = generateGuestCode();
+      console.log("guest: " + guestCode);
 
-      // TODO: output guest code
+      // TODO: store guest code
 
+      response.write(guestCode);
       response.statusCode = 200;
       response.end();
       return;
-    } else if (token == Code /*storedCode*/) {
+    } else if (token == storedCode) {
       response.statusCode = 200;
       response.end();
       return;
@@ -140,5 +141,3 @@ http.createServer(function(request, response) {				//starts server
   response.end("MOVED\n");
 
 }).listen(8080);
-
-
