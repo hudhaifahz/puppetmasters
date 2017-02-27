@@ -31,21 +31,21 @@ var addressMap = {
 };
 
 var motorMap = {
-  headTilt:         0,
-  headTurn:         1,
-  armElbowLeft:     0,
-  armHandOneLeft:   1,
-  armHandTwoLeft:   0,
-  armElbowRight:    1,
-  armHandOneRight:  0,
-  armHandTwoRight:  1,
-  backShoulderLeft: 0,
-  backShoulderRight:1,
-  back:             0,
-  legKneeLeft:      1,
-  legKneeRight:     0,
-  legHeelLeft:      1,
-  legHeelRight:     0
+  headTilt:         1,
+  headTurn:         2,
+  armElbowLeft:     1,
+  armHandOneLeft:   2,
+  armHandTwoLeft:   1,
+  armElbowRight:    2,
+  armHandOneRight:  1,
+  armHandTwoRight:  2,
+  backShoulderLeft: 1,
+  backShoulderRight:2,
+  back:             1,
+  legKneeLeft:      2,
+  legKneeRight:     1,
+  legHeelLeft:      2,
+  legHeelRight:     1,
 };
 
 // for html test
