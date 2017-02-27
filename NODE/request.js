@@ -107,22 +107,28 @@ http.createServer(function(request, response) {				//starts server
     return;
   }
 
-  // if admin code, generate a guest code and return it.
-  if (token === adminCode) {
-    var guestCode = require('./guestcode.js');
-    Code = guestCode();
-
-    // TODO: output guest code
-  }
-
   // TODO: fetch current stored code here
 
   // used to check to ensure the user has the valid token (avoid input errors)
   // token/validate/XXXXX
-  if (token === 'token' && controller == 'validate' && motion == storedCode) {
-    response.statusCode = 200;
-    response.end();
-    return;
+  if (token === 'token' && controller == 'validate')
+    // in this case, token is actually stored in a different place
+    token = reqUrl[3];
+
+    if (token === adminCode) {
+      var guestCode = require('./guestcode.js');
+      Code = guestCode();
+
+      // TODO: output guest code
+
+      response.statusCode = 200;
+      response.end();
+      return;
+    } else if (token == storedCode) {
+      response.statusCode = 200;
+      response.end();
+      return;
+    }  // else falls out to next block
   }
 
   // ensure the token is valid
