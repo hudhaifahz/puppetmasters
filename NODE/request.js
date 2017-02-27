@@ -1,14 +1,9 @@
 var http = require('http');						//allows server
 var exec = require('child_process').exec;		//allows terminal commands
-//pinmap
-var pinmap = {  '/?echo%2Fon=': 9,
-                '/?echo%2Foff=': 9,
-                '/': [9,'gpio write 9 1'] };
 
 // Admin code
 var adminCode = "ALICE";
 // Default guest code, can be changed by admin
-//var guestCode = require('./guestcode.js');
 var Code = 0;
 
 // Maps controller address and motor address to each limb
@@ -48,18 +43,8 @@ var motorMap = {
   legHeelRight:     1,
 };
 
-// for html test
-var fs = require('fs');							//allows reading of file, only for test
-fs.readFile('./index.html', function (err, html) {
-  if (err) {
-      throw err;
-  }
 
 http.createServer(function(request, response) {				//starts server
-//for html test
-//  response.writeHeader(200, {"Content-Type": "text/html"});
-  response.write(html);
-  response.end();
 
   request.on('error', function(err) {
     console.error(err);
@@ -79,18 +64,6 @@ http.createServer(function(request, response) {				//starts server
   var token      = reqUrl[1];
   var controller = reqUrl[2];
   var motion     = reqUrl[3];
-
-//  var reqUrl = request.url;
-//  console.log(reqUrl);
-//  reqUrl = reqUrl.replace('%2F','/').split('/')
-  console.log("reqUrl: " + reqUrl);
-  console.log("reqUrl0: " + reqUrl[0]);
-  console.log("reqUrl1: " + reqUrl[1]);
-  console.log("reqUrl11: " + reqUrl[1][1]);
-  console.log(reqUrl);
-  console.log(reqUrl[0]);
-  console.log(reqUrl[1]);
-  console.log(reqUrl[1][1]);
 
   // exit early if it's not a GET request,
   // exit early if there's no access code (401 error),
@@ -129,7 +102,7 @@ http.createServer(function(request, response) {				//starts server
       response.statusCode = 200;
       response.end();
       return;
-    } else if (token == storedCode) {
+    } else if (token == Code /*storedCode*/) {
       response.statusCode = 200;
       response.end();
       return;
@@ -168,4 +141,4 @@ http.createServer(function(request, response) {				//starts server
 
 }).listen(8080);
 
-});
+
