@@ -48,6 +48,12 @@ var motorMap = {
 
 
 http.createServer(function(request, response) {				//starts server
+  
+  var ip = require('./ip.js');
+  var ip = ip();
+  
+
+  response.setHeader('Access-Control-Allow-Origin', 'http://' + ip);
 
   request.on('error', function(err) {
     console.error(err);
@@ -159,7 +165,7 @@ http.createServer(function(request, response) {				//starts server
   var speed             = parseInt(motion);
 
   //TODO: Add timeout.
-  console.log("guest: " + Code);
+  console.log("guest: " + guestCode);
   console.log("controllerAddress: " + controllerAddress);
   console.log("motorAddress: " + motorAddress);
   console.log("speed: " + speed);
