@@ -1,10 +1,13 @@
-var http = require('http');						//allows server
+var http = require('http');						      //allows server
 var exec = require('child_process').exec;		//allows terminal commands
 
 // Admin code
 var adminCode = "ALICE";
+
 // Default guest code, can be changed by admin
-var Code = 0;
+var storedCode = '';
+
+var tokenFile = '/tmp/token';
 
 // Maps controller address and motor address to each limb
 var addressMap = {
@@ -59,7 +62,7 @@ http.createServer(function(request, response) {				//starts server
   // reqUrl format: ",XYE58,arm,right,127"
   // Note: reqUrl="" reqUrl[1]="XYE58" reqUrl[2]="armElbowLeft" reqUrl[3]=127
   var reqUrl = request.url;
-  console.log(reqUrl);
+
   reqUrl = reqUrl.replace('%2F','/').split('/')
   var token      = reqUrl[1];
   var controller = reqUrl[2];
@@ -83,8 +86,12 @@ http.createServer(function(request, response) {				//starts server
     return;
   }
 
-
-  // TODO: fetch current stored code here
+  var fs   = require('fs');                   // allows file manipulation
+  fs.exists(tokenFile, function(exists) {
+    if (exists) {
+      storedCode = fs.readFileSync(tokenFile, "utf8");
+    }
+  });
 
   // used to check to ensure the user has the valid token (avoid input errors)
   // token/validate/XXXXX
@@ -97,14 +104,14 @@ http.createServer(function(request, response) {				//starts server
       response.statusCode = 200;
       response.end();
       return;
-    } else if (token == storedCode) {
+    } else if (token === storedCode) {
       response.statusCode = 200;
       response.end();
       return;
     }  // else falls out to next block
   }
 
-  if (controller === 'generate') {
+  if (controller === 'token' && motion === 'generate') {
     if (token !== adminCode) {
       response.statusCode = 401;
       response.end();
@@ -115,7 +122,15 @@ http.createServer(function(request, response) {				//starts server
     guestCode = generateGuestCode();
     console.log("guest: " + guestCode);
 
-    // TODO: store guest code
+    var fs = require('fs');
+    fs.writeFile("/tmp/token", guestCode, function(err) {
+        if(err) {
+          console.log(err);
+          response.statusCode = 500;
+          response.end();
+          return;
+        }
+    });
 
     response.write(guestCode);
     response.statusCode = 200;
@@ -124,7 +139,7 @@ http.createServer(function(request, response) {				//starts server
   }
 
   // ensure the token is valid
-  if (token !== Code /*storedCode*/) {
+  if (token !== storedCode) {
     response.statusCode = 401;
     response.end();
     return;
