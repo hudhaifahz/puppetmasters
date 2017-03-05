@@ -9,6 +9,10 @@ var storedCode = '';
 
 var tokenFile = '/tmp/token';
 
+var guestCode = '';
+
+var timeoutHandles = [];
+
 // Maps controller address and motor address to each limb
 var addressMap = {
   headTilt:         128,
@@ -53,7 +57,7 @@ http.createServer(function(request, response) {				//starts server
   var ip = ip();
   
 
-  response.setHeader('Access-Control-Allow-Origin', 'http://' + ip);
+  response.setHeader('Access-Control-Allow-Origin', 'http://puppet');
 
   request.on('error', function(err) {
     console.error(err);
@@ -169,10 +173,14 @@ http.createServer(function(request, response) {				//starts server
   console.log("controllerAddress: " + controllerAddress);
   console.log("motorAddress: " + motorAddress);
   console.log("speed: " + speed);
+  
+  if(controller in timeoutHandles){
+    clearTimeout(timeoutHandles[controller]);
+  }
 
   var move = require('./move.js');
   move(controllerAddress, motorAddress, speed);
-  setTimeout(function(){move(controllerAddress, motorAddress, 0);}, 5000)
+  timeoutHandles[controller] = setTimeout(function(){  move(controllerAddress, motorAddress, 0);},7000);
   response.end("MOVED\n");
 
 }).listen(8080);
