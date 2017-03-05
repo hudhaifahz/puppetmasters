@@ -172,6 +172,7 @@ http.createServer(function(request, response) {				//starts server
 
   var move = require('./move.js');
   move(controllerAddress, motorAddress, speed);
+  setTimeout(function(){move(controllerAddress, motorAddress, 0);}, 5000)
   response.end("MOVED\n");
 
 }).listen(8080);
