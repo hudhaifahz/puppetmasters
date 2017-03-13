@@ -13,6 +13,10 @@ var guestCode = '';
 
 var timeoutHandles = [];
 
+/*
+
+OLD MAPPING INFO
+
 // Maps controller address and motor address to each limb
 var addressMap = {
   headTilt:         128,
@@ -48,6 +52,51 @@ var motorMap = {
   legKneeRight:     1,
   legHeelLeft:      2,
   legHeelRight:     1,
+};
+
+
+
+*/
+
+
+
+// Maps controller address and motor address to each limb
+var addressMap = {
+  headTilt:         128,
+  headTurn:         128,
+  armElbowLeft:     129,
+  armHandOneLeft:   129,
+  armHandTwoLeft:   130,
+  armElbowRight:    130,
+  armHandOneRight:  131,
+  armHandTwoRight:  131,
+  backShoulderLeft: 132,
+  backShoulderRight:132,
+  legKneeLeft:      133,
+  legKneeRight:     133,
+  legHeelLeft:      134,
+  legHeelRight:     134,
+  back:             135,
+
+};
+
+var motorMap = {
+  headTilt:         1,
+  headTurn:         2,
+  armElbowLeft:     1,
+  armHandOneLeft:   2,
+  armHandTwoLeft:   1,
+  armElbowRight:    2,
+  armHandOneRight:  1,
+  armHandTwoRight:  2,
+  backShoulderLeft: 1,
+  backShoulderRight:2,
+  legKneeLeft:      1,
+  legKneeRight:     2,
+  legHeelLeft:      1,
+  legHeelRight:     2,
+  back:             1,
+
 };
 
 
